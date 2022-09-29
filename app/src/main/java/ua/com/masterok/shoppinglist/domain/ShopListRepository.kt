@@ -1,6 +1,6 @@
 package ua.com.masterok.shoppinglist.domain
 
-interface ShopLIstRepository {
+interface ShopListRepository {
 
     fun addNewItem(shopItem: ShopItem)
 
