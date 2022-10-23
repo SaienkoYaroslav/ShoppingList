@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ua.com.masterok.shoppinglist.R
 import ua.com.masterok.shoppinglist.domain.ShopItem
@@ -12,8 +13,12 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
 
     var shopList = listOf<ShopItem>()
         set(value) {
+            // краща альтернатива notifyDataSetChanged()
+            // старий список це той який тут був, а новий той який хочемо встановити
+            val callback = ShopListDiffCallback(shopList, value)
+            val difResult = DiffUtil.calculateDiff(callback)
+            difResult.dispatchUpdatesTo(this)
             field = value
-            notifyDataSetChanged()
         }
 
     //     interface OnShopItemLongClickListener {
