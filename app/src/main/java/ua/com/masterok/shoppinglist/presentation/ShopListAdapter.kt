@@ -1,33 +1,22 @@
 package ua.com.masterok.shoppinglist.presentation
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import ua.com.masterok.shoppinglist.R
 import ua.com.masterok.shoppinglist.domain.ShopItem
 
-class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>() {
+// успадкування від ListAdapter для оптимізації ShopItemDiffCallback, який в свою чергу оптимізує і
+// заміняє метод notifyDataSetChanged()
+// ListAdapter - реалізує всю логіку роботи зі списками, тому багато звчиного відсутнє
+// В <> передаємо 2 параметри. 1 - тип з яким працюємо. 2 - тип вьюхолдера і в конструктор класу
+// ListAdapter передаємо екземпляр класу Колбек
+class ShopListAdapter : ListAdapter<ShopItem, ShopItemViewHolder>(ShopItemDiffCallback()) {
 
-    var shopList = listOf<ShopItem>()
-        set(value) {
-            // краща альтернатива notifyDataSetChanged()
-            // старий список це той який тут був, а новий той який хочемо встановити
-            val callback = ShopListDiffCallback(shopList, value)
-            val difResult = DiffUtil.calculateDiff(callback)
-            difResult.dispatchUpdatesTo(this)
-            field = value
-        }
 
-    //     interface OnShopItemLongClickListener {
-    //        fun onShopItemLongClick(shopItem: ShopItem)
-    //    }
     var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null
 
     var onShopItemClickListener: ((ShopItem) -> Unit)? = null
-
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
@@ -40,7 +29,8 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
     }
 
     override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
-        val shopItem = shopList[position]
+        // getItem() - метод з ListAdapter
+        val shopItem = getItem(position)
         holder.tvName.text = shopItem.name
         holder.tvCount.text = shopItem.count.toString()
         holder.itemView.setOnLongClickListener {
@@ -54,24 +44,19 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
         }
     }
 
-    override fun getItemCount(): Int {
-        return shopList.size
-    }
+    // Непотрібний метод при, якщо успадкування від ListAdapter
+//    override fun getItemCount(): Int {
+//
+//    }
 
     override fun getItemViewType(position: Int): Int {
-        return if (shopList[position].enabled) {
+        return if (getItem(position).enabled) {
             VIEW_ENABLED
         } else {
             VIEW_DISABLED
         }
 
     }
-
-    class ShopItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvName = view.findViewById<TextView>(R.id.tv_name)
-        val tvCount = view.findViewById<TextView>(R.id.tv_count)
-    }
-
 
     companion object {
 

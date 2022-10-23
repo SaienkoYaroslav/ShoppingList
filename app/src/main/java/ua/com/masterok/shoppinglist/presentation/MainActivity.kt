@@ -22,7 +22,8 @@ class MainActivity : AppCompatActivity() {
         // теж саме що viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModel.shopListLiveData.observe(this) {
-            shopListAdapter.shopList = it
+            //shopListAdapter.shopList = it замість, при використанні ListAdapter
+            shopListAdapter.submitList(it)
         }
     }
 
@@ -61,7 +62,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val deletedShopItem: ShopItem = shopListAdapter.shopList[viewHolder.adapterPosition]
+                // currentList - повертаэ актуальний ліст при успадкуванні адапьера від ListAdapter
+                val deletedShopItem: ShopItem = shopListAdapter.currentList[viewHolder.adapterPosition]
                 viewModel.removeItem(deletedShopItem)
             }
         }).attachToRecyclerView(rvShopList)
