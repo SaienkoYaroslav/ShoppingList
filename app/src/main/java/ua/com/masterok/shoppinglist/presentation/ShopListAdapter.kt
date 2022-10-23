@@ -16,6 +16,13 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
             notifyDataSetChanged()
         }
 
+    //     interface OnShopItemLongClickListener {
+    //        fun onShopItemLongClick(shopItem: ShopItem)
+    //    }
+    var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null
+
+    var onShopItemClickListener: ((ShopItem) -> Unit)? = null
+
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
@@ -31,7 +38,15 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
         val shopItem = shopList[position]
         holder.tvName.text = shopItem.name
         holder.tvCount.text = shopItem.count.toString()
-        holder.itemView.setOnLongClickListener { true }
+        holder.itemView.setOnLongClickListener {
+            // .invoke - дозволяє викликати метод, якщо він != нал, якби тип onShopItemLongClickListener
+            // ну був би нулабельним, то можна було обійтись без методу .invoke
+            onShopItemLongClickListener?.invoke(shopItem)
+            true
+        }
+        holder.itemView.setOnClickListener {
+            onShopItemClickListener?.invoke(shopItem)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -51,6 +66,7 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
         val tvName = view.findViewById<TextView>(R.id.tv_name)
         val tvCount = view.findViewById<TextView>(R.id.tv_count)
     }
+
 
     companion object {
 
