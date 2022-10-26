@@ -1,11 +1,11 @@
 package ua.com.masterok.shoppinglist.presentation
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ua.com.masterok.shoppinglist.R
 import ua.com.masterok.shoppinglist.domain.ShopItem
 
@@ -25,7 +25,14 @@ class MainActivity : AppCompatActivity() {
             //shopListAdapter.shopList = it замість, при використанні ListAdapter
             shopListAdapter.submitList(it)
         }
+        val buttonAdd = findViewById<FloatingActionButton>(R.id.button_add_shop_item)
+        buttonAdd.setOnClickListener {
+            val intent = ShopItemActivity.newIntentAddItem(this)
+            startActivity(intent)
+        }
+
     }
+
 
     private fun setupRecyclerView() {
         rvShopList = findViewById<RecyclerView>(R.id.rv_shop_list)
@@ -63,7 +70,8 @@ class MainActivity : AppCompatActivity() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 // currentList - повертаэ актуальний ліст при успадкуванні адапьера від ListAdapter
-                val deletedShopItem: ShopItem = shopListAdapter.currentList[viewHolder.adapterPosition]
+                val deletedShopItem: ShopItem =
+                    shopListAdapter.currentList[viewHolder.adapterPosition]
                 viewModel.removeItem(deletedShopItem)
             }
         }).attachToRecyclerView(rvShopList)
@@ -71,7 +79,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupClickListener() {
         shopListAdapter.onShopItemClickListener = {
-            Toast.makeText(applicationContext, it.id.toString(), Toast.LENGTH_SHORT).show()
+            val intent = ShopItemActivity.newIntentEditItem(this, it.id)
+            startActivity(intent)
         }
     }
 

@@ -1,7 +1,6 @@
 package ua.com.masterok.shoppinglist.presentation
 
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ua.com.masterok.shoppinglist.data.ShopListRepositoryImpl
 import ua.com.masterok.shoppinglist.domain.EditItemUseCase
