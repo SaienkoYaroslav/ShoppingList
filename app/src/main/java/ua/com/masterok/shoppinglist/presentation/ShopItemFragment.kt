@@ -1,5 +1,6 @@
 package ua.com.masterok.shoppinglist.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -18,6 +19,10 @@ class ShopItemFragment : Fragment() {
 
     private lateinit var viewModel: ShopItemViewModel
 
+    // Якщо активіті в якій є фрагмент забов’язана реалізовувати певний інтерфейс, то об’єкт цього інтерфейсу
+    // у фрагменті робиться не нулабельним і якщо активіті не реалізує інтерфейс, то кидається виключення
+    private lateinit var onEditingFinishListener: OnEditingFinishListener
+
     private lateinit var tilName: TextInputLayout
     private lateinit var tilCount: TextInputLayout
     private lateinit var etName: EditText
@@ -27,6 +32,16 @@ class ShopItemFragment : Fragment() {
     private var screenMode: String = MODE_UNKNOWN
     private var shopItemId: Int = ShopItem.UNDEFINED_ID
 
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnEditingFinishListener) {
+            onEditingFinishListener = context
+        } else {
+            // кидається виключення
+            throw RuntimeException("Activity must implement OnEditingFinishListener")
+        }
+    }
 
     // зазвичай перевірки у фрагментах запускають в цьому методі, щоб якщо чогось необхідного немає
     // програма відразу падала і не виконувався подальший код
@@ -96,7 +111,7 @@ class ShopItemFragment : Fragment() {
 
     private fun observeCloseScreen() {
         viewModel.closeScreen.observe(viewLifecycleOwner) {
-            activity?.onBackPressed()
+            onEditingFinishListener.onEditingFinish()
         }
     }
 
@@ -205,4 +220,9 @@ class ShopItemFragment : Fragment() {
             }
         }
     }
+
+    interface OnEditingFinishListener {
+        fun onEditingFinish()
+    }
+
 }
