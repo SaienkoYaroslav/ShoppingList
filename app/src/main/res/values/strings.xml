@@ -6,4 +6,5 @@
     <string name="save">Save</string>
     <string name="error_count">Enter correct count</string>
     <string name="error_name">Enter name</string>
+    <string name="Success">Success</string>
 </resources>
