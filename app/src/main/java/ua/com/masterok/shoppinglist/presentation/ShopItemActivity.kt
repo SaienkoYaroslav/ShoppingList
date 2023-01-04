@@ -14,7 +14,6 @@ class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishLi
     private var shopItemId = ShopItem.UNDEFINED_ID
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shop_item)
