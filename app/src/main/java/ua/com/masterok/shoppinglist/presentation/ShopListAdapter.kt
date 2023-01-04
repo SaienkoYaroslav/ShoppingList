@@ -2,8 +2,12 @@ package ua.com.masterok.shoppinglist.presentation
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.ListAdapter
 import ua.com.masterok.shoppinglist.R
+import ua.com.masterok.shoppinglist.databinding.ItemShopDisabledBinding
+import ua.com.masterok.shoppinglist.databinding.ItemShopEnabledBinding
 import ua.com.masterok.shoppinglist.domain.ShopItem
 
 // успадкування від ListAdapter для оптимізації ShopItemDiffCallback, який в свою чергу оптимізує і
@@ -20,26 +24,35 @@ class ShopListAdapter : ListAdapter<ShopItem, ShopItemViewHolder>(ShopItemDiffCa
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(
+        val binding = DataBindingUtil.inflate<ViewDataBinding>(
+            LayoutInflater.from(parent.context),
             viewType,
             parent,
             false
         )
-        return ShopItemViewHolder(view)
+        return ShopItemViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
         // getItem() - метод з ListAdapter
         val shopItem = getItem(position)
-        holder.tvName.text = shopItem.name
-        holder.tvCount.text = shopItem.count.toString()
-        holder.itemView.setOnLongClickListener {
+        val binding = holder.binding
+        when(binding) {
+            is ItemShopDisabledBinding -> {
+                binding.shopItem = shopItem
+            }
+            is ItemShopEnabledBinding -> {
+                binding.shopItem = shopItem
+            }
+        }
+
+        binding.root.setOnLongClickListener {
             // .invoke - дозволяє викликати метод, якщо він != нал, якби тип onShopItemLongClickListener
             // ну був би нулабельним, то можна було обійтись без методу .invoke
             onShopItemLongClickListener?.invoke(shopItem)
             true
         }
-        holder.itemView.setOnClickListener {
+        binding.root.setOnClickListener {
             onShopItemClickListener?.invoke(shopItem)
         }
     }
