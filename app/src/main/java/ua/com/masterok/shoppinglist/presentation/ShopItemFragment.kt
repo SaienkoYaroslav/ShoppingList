@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +36,7 @@ class ShopItemFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        Log.d("ShopItemFragment", "onAttach")
         if (context is OnEditingFinishListener) {
             onEditingFinishListener = context
         } else {
@@ -47,6 +49,7 @@ class ShopItemFragment : Fragment() {
     // програма відразу падала і не виконувався подальший код
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("ShopItemFragment", "onCreate")
         parseParams()
     }
 
@@ -56,6 +59,7 @@ class ShopItemFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d("ShopItemFragment", "onCreateView")
         return inflater.inflate(R.layout.fragment_shop_item, container, false)
     }
 
@@ -63,6 +67,7 @@ class ShopItemFragment : Fragment() {
     // Тут працюємо з кодом, так як у onCreate() в Активіті
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("ShopItemFragment", "onViewCreated")
         viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
         initViews(view)
         observeCloseScreen()
@@ -225,4 +230,38 @@ class ShopItemFragment : Fragment() {
         fun onEditingFinish()
     }
 
+    override fun onStart() {
+        super.onStart()
+        Log.d("ShopItemFragment", "onStart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("ShopItemFragment", "onResume")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d("ShopItemFragment", "onPause")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d("ShopItemFragment", "onStop")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d("ShopItemFragment", "onDestroyView")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("ShopItemFragment", "onDestroy")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Log.d("ShopItemFragment", "onDetach")
+    }
 }
