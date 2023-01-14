@@ -1,7 +1,10 @@
 package ua.com.masterok.shoppinglist.presentation
 
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import ua.com.masterok.shoppinglist.data.ShopListRepositoryImpl
 import ua.com.masterok.shoppinglist.domain.EditItemUseCase
 import ua.com.masterok.shoppinglist.domain.GetShopListUseCase
@@ -10,9 +13,9 @@ import ua.com.masterok.shoppinglist.domain.ShopItem
 
 // успадковуємся від ViewModel(), якщо далі нам не потрібно передавати контекст, якщо потрібно, то
 // успадковуємось від AndroidViewModel() куди передаємо аплікейшн в якості контенту (AndroidViewModel(Application()))
-class MainViewModel : ViewModel() {
+class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository = ShopListRepositoryImpl
+    private val repository = ShopListRepositoryImpl(application)
 
     private val getSHopListUseCase = GetShopListUseCase(repository)
     private val removeItemUseCase = RemoveItemUseCase(repository)
@@ -22,12 +25,17 @@ class MainViewModel : ViewModel() {
 
 
     fun removeItem(shopItem: ShopItem) {
-        removeItemUseCase.removeItem(shopItem)
+        viewModelScope.launch {
+            removeItemUseCase.removeItem(shopItem)
+        }
     }
 
 
-    fun changeEnableState(shopItem: ShopItem){
-        val newItem = shopItem.copy(enabled = !shopItem.enabled)
-        editItemUseCase.editItem(newItem)
+    fun changeEnableState(shopItem: ShopItem) {
+        viewModelScope.launch {
+            val newItem = shopItem.copy(enabled = !shopItem.enabled)
+            editItemUseCase.editItem(newItem)
+        }
     }
+
 }
