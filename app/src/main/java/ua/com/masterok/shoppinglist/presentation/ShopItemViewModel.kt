@@ -1,5 +1,7 @@
 package ua.com.masterok.shoppinglist.presentation
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,9 +11,9 @@ import ua.com.masterok.shoppinglist.domain.EditItemUseCase
 import ua.com.masterok.shoppinglist.domain.GetItemFromIdUseCase
 import ua.com.masterok.shoppinglist.domain.ShopItem
 
-class ShopItemViewModel : ViewModel() {
+class ShopItemViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository: ShopListRepositoryImpl = ShopListRepositoryImpl
+    private val repository: ShopListRepositoryImpl = ShopListRepositoryImpl(application)
 
     private val addNewItemUseCase = AddNewItemUseCase(repository)
     private val getItemFromIdUseCase = GetItemFromIdUseCase(repository)
