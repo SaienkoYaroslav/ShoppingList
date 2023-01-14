@@ -2,7 +2,6 @@ package ua.com.masterok.shoppinglist.data
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
 import ua.com.masterok.shoppinglist.domain.ShopItem
 import ua.com.masterok.shoppinglist.domain.ShopListRepository
@@ -15,19 +14,19 @@ class ShopListRepositoryImpl(
     private val shopListDao = AppDatabase.getInstance(application).shopListDao()
     private val mapper = ShopListMapper()
 
-    override fun addNewItem(shopItem: ShopItem) {
+    override suspend fun addNewItem(shopItem: ShopItem) {
         shopListDao.addShopItem(mapper.mapEntityToDbModel(shopItem))
     }
 
-    override fun removeItem(shopItem: ShopItem) {
+    override suspend fun removeItem(shopItem: ShopItem) {
         shopListDao.deleteShopItem(shopItem.id)
     }
 
-    override fun editItem(shopItem: ShopItem) {
+    override suspend fun editItem(shopItem: ShopItem) {
         shopListDao.addShopItem(mapper.mapEntityToDbModel(shopItem))
     }
 
-    override fun getItemFromId(shopItemId: Int): ShopItem {
+    override suspend fun getItemFromId(shopItemId: Int): ShopItem {
         val dbModel = shopListDao.getShopItem(shopItemId)
         return mapper.mapDbModelToEntity(dbModel)
     }
