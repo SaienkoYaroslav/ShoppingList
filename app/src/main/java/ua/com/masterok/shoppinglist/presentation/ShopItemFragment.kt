@@ -8,22 +8,29 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.textfield.TextInputLayout
-import ua.com.masterok.shoppinglist.R
+import ua.com.masterok.shoppinglist.ListApp
 import ua.com.masterok.shoppinglist.databinding.FragmentShopItemBinding
 import ua.com.masterok.shoppinglist.domain.ShopItem
+import javax.inject.Inject
 
 class ShopItemFragment : Fragment() {
+
+    private val component by lazy {
+        (requireActivity().application as ListApp).component
+    }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[ShopItemViewModel::class.java]
+    }
 
     private var _binding: FragmentShopItemBinding? = null
     private val binding: FragmentShopItemBinding
         get() = _binding ?: throw RuntimeException("FragmentShopItemBinding == null")
-
-    private lateinit var viewModel: ShopItemViewModel
 
     // Якщо активіті в якій є фрагмент забов’язана реалізовувати певний інтерфейс, то об’єкт цього інтерфейсу
     // у фрагменті робиться не нулабельним і якщо активіті не реалізує інтерфейс, то кидається виключення
@@ -34,6 +41,7 @@ class ShopItemFragment : Fragment() {
 
 
     override fun onAttach(context: Context) {
+        component.inject(this)
         super.onAttach(context)
         Log.d("ShopItemFragment", "onAttach")
         if (context is OnEditingFinishListener) {
@@ -68,7 +76,6 @@ class ShopItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("ShopItemFragment", "onViewCreated")
-        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         observeCloseScreen()
@@ -135,7 +142,6 @@ class ShopItemFragment : Fragment() {
             }
         })
     }
-
 
 
     private fun parseParams() {

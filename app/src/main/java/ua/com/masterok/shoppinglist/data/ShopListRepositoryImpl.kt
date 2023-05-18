@@ -1,18 +1,19 @@
 package ua.com.masterok.shoppinglist.data
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import ua.com.masterok.shoppinglist.domain.ShopItem
 import ua.com.masterok.shoppinglist.domain.ShopListRepository
+import javax.inject.Inject
 
 // Реалізація Репозиторія з Домейн шару
-class ShopListRepositoryImpl(
-    application: Application
+class ShopListRepositoryImpl @Inject constructor(
+    private val shopListDao: ShopListDao,
+    private val mapper: ShopListMapper
 ) : ShopListRepository {
 
-    private val shopListDao = AppDatabase.getInstance(application).shopListDao()
-    private val mapper = ShopListMapper()
+    //private val shopListDao = AppDatabase.getInstance(application).shopListDao()
+
 
     override suspend fun addNewItem(shopItem: ShopItem) {
         shopListDao.addShopItem(mapper.mapEntityToDbModel(shopItem))
