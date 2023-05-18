@@ -4,29 +4,39 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import ua.com.masterok.shoppinglist.ListApp
 import ua.com.masterok.shoppinglist.R
 import ua.com.masterok.shoppinglist.databinding.ActivityMainBinding
 import ua.com.masterok.shoppinglist.domain.ShopItem
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishListener {
 
-    private lateinit var viewModel: MainViewModel
+    private val component by lazy {
+        (application as ListApp).component
+    }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
+    }
+
     private lateinit var shopListAdapter: ShopListAdapter
-    private lateinit var rvShopList: RecyclerView
     private lateinit var binding: ActivityMainBinding
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupRecyclerView()
         // теж саме що viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModel.shopListLiveData.observe(this) {
             //shopListAdapter.shopList = it замість, при використанні ListAdapter
             shopListAdapter.submitList(it)
@@ -42,8 +52,8 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishListen
     }
 
     private fun setupRecyclerView() {
-        rvShopList = binding.rvShopList
-        with(rvShopList) {
+        binding.rvShopList
+        with(binding.rvShopList) {
             shopListAdapter = ShopListAdapter()
             adapter = shopListAdapter
             // встановлення максимальної кількості пула для кожного вью
@@ -81,7 +91,7 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishListen
                     shopListAdapter.currentList[viewHolder.adapterPosition]
                 viewModel.removeItem(deletedShopItem)
             }
-        }).attachToRecyclerView(rvShopList)
+        }).attachToRecyclerView(binding.rvShopList)
     }
 
     private fun setupClickListener() {

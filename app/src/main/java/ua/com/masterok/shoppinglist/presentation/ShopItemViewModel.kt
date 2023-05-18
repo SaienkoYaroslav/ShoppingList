@@ -1,27 +1,21 @@
 package ua.com.masterok.shoppinglist.presentation
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import ua.com.masterok.shoppinglist.data.ShopListRepositoryImpl
 import ua.com.masterok.shoppinglist.domain.AddNewItemUseCase
 import ua.com.masterok.shoppinglist.domain.EditItemUseCase
 import ua.com.masterok.shoppinglist.domain.GetItemFromIdUseCase
 import ua.com.masterok.shoppinglist.domain.ShopItem
+import javax.inject.Inject
 
-class ShopItemViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val repository: ShopListRepositoryImpl = ShopListRepositoryImpl(application)
-
-    private val addNewItemUseCase = AddNewItemUseCase(repository)
-    private val getItemFromIdUseCase = GetItemFromIdUseCase(repository)
-    private val editItemUseCase = EditItemUseCase(repository)
+class ShopItemViewModel @Inject constructor(
+    private val addNewItemUseCase: AddNewItemUseCase,
+    private val getItemFromIdUseCase: GetItemFromIdUseCase,
+    private val editItemUseCase: EditItemUseCase
+) : ViewModel() {
 
     // робота з ЛД в котліні. У ВМ працюємо зі змінною _errorInputName, а в Активіті викликаємо гетер
     // errorInputName
