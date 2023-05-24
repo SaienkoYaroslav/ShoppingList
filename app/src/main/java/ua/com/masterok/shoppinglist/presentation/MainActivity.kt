@@ -1,5 +1,6 @@
 package ua.com.masterok.shoppinglist.presentation
 
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -49,6 +50,15 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishListen
                 launchFragment(ShopItemFragment.newInstanceAddItem())
             }
         }
+
+        contentResolver.query(
+            Uri.parse("content://ua.com.masterok.shoppinglist/shop_items"),
+            null,
+            null,
+            null,
+            null,
+            null
+        )
     }
 
     private fun setupRecyclerView() {
