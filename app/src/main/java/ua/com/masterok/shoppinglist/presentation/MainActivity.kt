@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishListen
         }
 
         contentResolver.query(
-            Uri.parse("content://ua.com.masterok.shoppinglist/shop_items"),
+            Uri.parse("content://ua.com.masterok.shoppinglist/shop_items/3"),
             null,
             null,
             null,
