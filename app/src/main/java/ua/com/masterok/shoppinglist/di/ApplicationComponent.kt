@@ -3,6 +3,7 @@ package ua.com.masterok.shoppinglist.di
 import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
+import ua.com.masterok.shoppinglist.data.ShopListProvider
 import ua.com.masterok.shoppinglist.presentation.MainActivity
 import ua.com.masterok.shoppinglist.presentation.ShopItemFragment
 
@@ -13,6 +14,8 @@ interface ApplicationComponent {
     fun inject(activity: MainActivity)
 
     fun inject(fragment: ShopItemFragment)
+
+    fun inject(provider: ShopListProvider)
 
     @Component.Factory
     interface Factory {

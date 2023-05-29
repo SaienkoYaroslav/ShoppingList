@@ -2,6 +2,7 @@ package ua.com.masterok.shoppinglist.presentation
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -13,6 +14,7 @@ import ua.com.masterok.shoppinglist.R
 import ua.com.masterok.shoppinglist.databinding.ActivityMainBinding
 import ua.com.masterok.shoppinglist.domain.ShopItem
 import javax.inject.Inject
+import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishListener {
 
@@ -51,14 +53,30 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishListen
             }
         }
 
-        contentResolver.query(
-            Uri.parse("content://ua.com.masterok.shoppinglist/shop_items/3"),
-            null,
-            null,
-            null,
-            null,
-            null
-        )
+        thread {
+            val cursor = contentResolver.query(
+                Uri.parse("content://ua.com.masterok.shoppinglist/shop_items"),
+                null,
+                null,
+                null,
+                null,
+                null
+            )
+            while (cursor?.moveToNext() == true) {
+                val id = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
+                val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
+                val count = cursor.getInt(cursor.getColumnIndexOrThrow("count"))
+                val enabled = cursor.getInt(cursor.getColumnIndexOrThrow("enabled")) > 0
+                val shopItem = ShopItem(
+                    id = id,
+                    name = name,
+                    count = count,
+                    enabled = enabled
+                )
+                Log.d("MainActivity", "Cursor: ${shopItem.toString()}")
+            }
+            cursor?.close()
+        }
     }
 
     private fun setupRecyclerView() {
