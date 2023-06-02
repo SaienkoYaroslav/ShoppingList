@@ -56,7 +56,6 @@ class ShopListProvider : ContentProvider() {
     override fun insert(p0: Uri, p1: ContentValues?): Uri? {
         when (uriMatcher.match(p0)) {
             GET_SHOP_ITEMS_QUERY -> {
-                shopListDao.getShopListCursor()
                 if (p1 == null) return null
                 val id = p1.getAsInteger("id")
                 val name = p1.getAsString("name")
@@ -75,11 +74,36 @@ class ShopListProvider : ContentProvider() {
     }
 
     override fun delete(p0: Uri, p1: String?, p2: Array<out String>?): Int {
-        TODO("Not yet implemented")
+        when (uriMatcher.match(p0)) {
+            GET_SHOP_ITEMS_QUERY -> {
+                val id = p2?.get(0)?.toInt() ?: -1
+                return shopListDao.deleteShopItemByProvider(id)
+            }
+        }
+        return 0
     }
 
     override fun update(p0: Uri, p1: ContentValues?, p2: String?, p3: Array<out String>?): Int {
-        TODO("Not yet implemented")
+        when (uriMatcher.match(p0)) {
+            GET_SHOP_ITEMS_QUERY -> {
+                if (p1 == null) return 0
+                val id = p1.getAsInteger("id")
+                val name = p1.getAsString("name")
+                val count = p1.getAsInteger("count")
+                val enabled = p1.getAsBoolean("enabled")
+                val shopItem = ShopItem(
+                    id = id,
+                    name = name,
+                    count = count,
+                    enabled = enabled
+                )
+                shopListDao.addShopItemByProvider(mapper.mapEntityToDbModel(shopItem))
+                val deletedId = p3?.get(0)?.toInt() ?: -1
+                return shopListDao.deleteShopItemByProvider(deletedId)
+            }
+
+        }
+        return 0
     }
 
     companion object {

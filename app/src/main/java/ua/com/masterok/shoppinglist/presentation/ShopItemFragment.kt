@@ -100,7 +100,21 @@ class ShopItemFragment : Fragment() {
         binding.saveButton.setOnClickListener {
             val inputName = binding.etName.text?.toString()
             val inputCount = binding.etCount.text?.toString()
-            viewModel.editShopItem(inputName, inputCount)
+//            viewModel.editShopItem(inputName, inputCount)
+
+            thread {
+                context?.contentResolver?.update(
+                    Uri.parse("content://ua.com.masterok.shoppinglist/shop_items"),
+                    ContentValues().apply {
+                        put("id", 0)
+                        put("name", binding.etName.text?.toString())
+                        put("count", binding.etCount.text?.toString()?.toInt())
+                        put("enabled", true)
+                    },
+                    null,
+                    arrayOf(shopItemId.toString())
+                )
+            }
         }
 
     }

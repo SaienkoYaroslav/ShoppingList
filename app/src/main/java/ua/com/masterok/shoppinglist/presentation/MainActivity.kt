@@ -117,7 +117,14 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishListen
                 // currentList - повертає актуальний ліст при успадкуванні адаптера від ListAdapter
                 val deletedShopItem: ShopItem =
                     shopListAdapter.currentList[viewHolder.adapterPosition]
-                viewModel.removeItem(deletedShopItem)
+//                viewModel.removeItem(deletedShopItem)
+                thread {
+                    contentResolver.delete(
+                        Uri.parse("content://ua.com.masterok.shoppinglist/shop_items"),
+                        null,
+                        arrayOf(deletedShopItem.id.toString())
+                    )
+                }
             }
         }).attachToRecyclerView(binding.rvShopList)
     }
