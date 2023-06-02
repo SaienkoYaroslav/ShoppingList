@@ -1,6 +1,8 @@
 package ua.com.masterok.shoppinglist.presentation
 
+import android.content.ContentValues
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,6 +16,7 @@ import ua.com.masterok.shoppinglist.ListApp
 import ua.com.masterok.shoppinglist.databinding.FragmentShopItemBinding
 import ua.com.masterok.shoppinglist.domain.ShopItem
 import javax.inject.Inject
+import kotlin.concurrent.thread
 
 class ShopItemFragment : Fragment() {
 
@@ -103,13 +106,22 @@ class ShopItemFragment : Fragment() {
     }
 
     private fun launchAddMode() {
-
         binding.saveButton.setOnClickListener {
-            val name = binding.etName.text?.toString()
-            val count = binding.etCount.text?.toString()
-            viewModel.addNewShopItem(name, count)
+//            val name = binding.etName.text?.toString()
+//            val count = binding.etCount.text?.toString()
+//            viewModel.addNewShopItem(name, count)
+            thread {
+                context?.contentResolver?.insert(
+                    Uri.parse("content://ua.com.masterok.shoppinglist/shop_items"),
+                    ContentValues().apply {
+                        put("id", 0)
+                        put("name", binding.etName.text?.toString())
+                        put("count", binding.etCount.text?.toString()?.toInt())
+                        put("enabled", true)
+                    }
+                )
+            }
         }
-
     }
 
     private fun observeCloseScreen() {
